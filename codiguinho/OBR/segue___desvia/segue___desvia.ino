@@ -3,11 +3,15 @@
 #include <Servo.h>
 #define se 3
 #define sd 2
-#define trig 7
-#define eco 8
+#define triglateral 7
+#define ecolateral 8
+#define trig 10
+#define eco 11
 Servo motorE;
 Servo motorD;
-NewPing sonar (trig, eco);
+NewPing sonarlateral(triglateral, ecolateral);
+NewPing sonar(trig, eco);
+int distlateral;
 void setup() {
   pinMode(se, INPUT);
   pinMode(sd, INPUT);
@@ -19,10 +23,16 @@ void setup() {
 void loop() {
   int valorE = digitalRead(se);
   int valorD = digitalRead(sd);
+  int distlateral = sonarlateral.ping_cm();
   int dist = sonar.ping_cm();
-  Serial.print (dist);
-  Serial.println (" cm");
 
+  Serial.print (distlateral);
+  Serial.println (" cm");
+  Serial.print("        ");
+
+  Serial.print(dist);
+  Serial.println(" cm2");
+  delay(500);
 
   if (valorE == 1 && valorD == 0)//branco
   {
@@ -64,17 +74,22 @@ void direita () {
   motorD.write (1);
 }
 void desvia () {
-  direita ();
-  delay (750);
-  frente ();
-  delay (1200);
-  esquerda ();
-  delay (750);
-  frente ();
-  delay (2300);
-  esquerda ();
-  delay (720);
-  frente();
 
+  direita();
+  delay(750);
+
+  if (distlateral > 1 && distlateral < 6 ) {
+    frente();
+  } else {
+    esquerda();
+    delay(750);
+  }
+
+  if (distlateral > 1 && distlateral < 6 ) {
+    frente();
+  } else {
+    esquerda();
+    delay(750);
+  }
 
 }
